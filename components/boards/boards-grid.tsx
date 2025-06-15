@@ -16,6 +16,7 @@ import {
   MoreHorizontal,
   Eye,
   Trash2,
+  BarChart3,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -111,52 +112,59 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                 </DropdownMenu>
               </div>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent>
               <div className="space-y-4">
-                {/* Stats */}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center text-gray-600">
-                    <MessageSquare className="h-4 w-4 mr-1" />
-                    <span>{board.feedback?.[0]?.count || 0} feedback</span>
-                  </div>
-                  <div className="text-gray-500">/{board.slug}</div>
-                </div>
-
                 {/* Categories */}
                 {board.board_categories &&
                   board.board_categories.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {board.board_categories.slice(0, 3).map((category) => (
+                    <div className="flex flex-wrap gap-2">
+                      {board.board_categories.map((category) => (
                         <Badge
                           key={category.name}
-                          variant="secondary"
-                          className="text-xs"
                           style={{
-                            backgroundColor: `${category.color}20`,
-                            color: category.color,
+                            backgroundColor: category.color,
+                            color: "white",
                           }}
                         >
                           {category.name}
                         </Badge>
                       ))}
-                      {board.board_categories.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
-                          +{board.board_categories.length - 3} more
-                        </Badge>
-                      )}
                     </div>
                   )}
 
-                {/* Action Button */}
-                <Button
-                  asChild
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
-                >
-                  <Link href={`/boards/${board.slug}`} target="_blank">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Public Page
-                  </Link>
-                </Button>
+                {/* Stats */}
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <div className="flex items-center space-x-4">
+                    <span className="flex items-center">
+                      <MessageSquare className="h-4 w-4 mr-1" />
+                      {board.feedback?.[0]?.count || 0} feedback
+                    </span>
+                    <span>/{board.slug}</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    asChild
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
+                  >
+                    <Link href={`/boards/${board.slug}/feedback`}>
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      View All Feedback
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full rounded-full"
+                  >
+                    <Link href={`/boards/${board.slug}`} target="_blank">
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Public Page
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

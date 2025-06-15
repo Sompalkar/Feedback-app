@@ -25,9 +25,11 @@ import {
   CheckCircle,
   Share2,
   Copy,
+  Smile,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 
 interface Board {
   id: string;
@@ -45,6 +47,7 @@ export function PublicFeedbackPage({ board }: PublicFeedbackPageProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // Form state
   const [content, setContent] = useState("");
@@ -53,6 +56,16 @@ export function PublicFeedbackPage({ board }: PublicFeedbackPageProps) {
 
   // Share functionality
   const [showShareOptions, setShowShareOptions] = useState(false);
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    const cursorPosition =
+      (document.querySelector("textarea") as HTMLTextAreaElement)
+        ?.selectionStart || 0;
+    const textBeforeCursor = content.substring(0, cursorPosition);
+    const textAfterCursor = content.substring(cursorPosition);
+    setContent(textBeforeCursor + emojiData.emoji + textAfterCursor);
+    setShowEmojiPicker(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,18 +312,39 @@ export function PublicFeedbackPage({ board }: PublicFeedbackPageProps) {
                   </Select>
                 </div>
 
-                {/* Feedback Content */}
+                {/* Feedback Content with Emoji Picker */}
                 <div className="space-y-2">
                   <Label htmlFor="content">Your Feedback *</Label>
-                  <Textarea
-                    id="content"
-                    placeholder="Share your thoughts, suggestions, or report issues..."
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                    rows={6}
-                    className="rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 resize-none"
-                  />
+                  <div className="relative">
+                    <Textarea
+                      id="content"
+                      placeholder="Share your thoughts, suggestions, or report issues..."
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      required
+                      rows={6}
+                      className="rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 resize-none pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    >
+                      <Smile className="h-5 w-5" />
+                    </Button>
+                    {showEmojiPicker && (
+                      <div className="absolute right-0 top-full mt-2 z-50">
+                        <EmojiPicker
+                          onEmojiClick={handleEmojiClick}
+                          width={400}
+                          height={400}
+                          theme={Theme.LIGHT}
+                        />
+                      </div>
+                    )}
+                  </div>
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>Minimum 10 characters</span>
                     <span
