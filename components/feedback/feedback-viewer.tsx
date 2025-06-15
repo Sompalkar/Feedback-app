@@ -94,7 +94,7 @@ export function FeedbackViewer({ board, feedback }: FeedbackViewerProps) {
   }));
 
   const copyPublicLink = async () => {
-    const publicUrl = `${window.location.origin}/board/${board.slug}`;
+    const publicUrl = `${window.location.origin}/boards/${board.slug}`;
     try {
       await navigator.clipboard.writeText(publicUrl);
       toast.success("Public link copied to clipboard!");
@@ -178,7 +178,7 @@ export function FeedbackViewer({ board, feedback }: FeedbackViewerProps) {
             asChild
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
           >
-            <Link href={`/board/${board.slug}`} target="_blank">
+            <Link href={`/boards/${board.slug}`} target="_blank">
               <ExternalLink className="h-4 w-4 mr-2" />
               View Public Page
             </Link>
