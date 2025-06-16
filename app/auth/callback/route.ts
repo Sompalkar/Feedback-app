@@ -2,14 +2,32 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get("code");
+  try {
+    const requestUrl = new URL(request.url);
+    const code = requestUrl.searchParams.get("code");
 
-  if (code) {
+    if (!code) {
+      return NextResponse.redirect(
+        new URL("/login?error=No code provided", requestUrl.origin)
+      );
+    }
+
     const supabase = createClient();
-    await supabase.auth.exchangeCodeForSession(code);
-  }
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (error) {
+      console.error("Auth callback error:", error);
+      return NextResponse.redirect(
+        new URL("/login?error=Invalid code", requestUrl.origin)
+      );
+    }
+
+    // URL to redirect to after sign in process completes
+    return NextResponse.redirect(new URL("/dashboard", requestUrl.origin));
+  } catch (error) {
+    console.error("Auth callback error:", error);
+    return NextResponse.redirect(
+      new URL("/login?error=Something went wrong", requestUrl.origin)
+    );
+  }
 }

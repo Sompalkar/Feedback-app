@@ -56,12 +56,15 @@ export function SignupForm() {
     try {
       const supabase = createClient();
 
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        "https://feedback-app-beta-two.vercel.app";
       // Sign up with email and password
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+          emailRedirectTo: `${siteUrl}/auth/callback`,
           data: {
             email_confirmed: false,
           },
